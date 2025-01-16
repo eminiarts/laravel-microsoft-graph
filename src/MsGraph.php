@@ -141,25 +141,14 @@ class MsGraph
                 throw new Exception($errorMessage);
             }
 
-            if (auth()->check()) {
                 $this->storeToken(
                     $accessToken->getToken(),
                     $accessToken->getRefreshToken(),
                     $accessToken->getExpires(),
                     $id,
-                    auth()->user()->email
+                    null,
                 );
-            } else {
-
-                $response = Http::withToken($accessToken->getToken())->get(self::$baseUrl.'me');
-
-                event(new NewMicrosoft365SignInEvent([
-                    'info' => $response->json(),
-                    'accessToken' => $accessToken->getToken(),
-                    'refreshToken' => $accessToken->getRefreshToken(),
-                    'expires' => $accessToken->getExpires(),
-                ]));
-            }
+            
         }
 
         return redirect(config('msgraph.msgraphLandingUri'));
@@ -276,7 +265,7 @@ class MsGraph
         $path = (isset($args[0])) ? $args[0] : '';
         $data = (isset($args[1])) ? $args[1] : [];
         $headers = (isset($args[2])) ? $args[2] : [];
-        $id = (isset($args[3])) ? $args[3] : auth()->id();
+        $id = (isset($args[3])) ? $args[3] : null;
 
         if (in_array($function, $options)) {
             return self::guzzle($function, $path, $data, $headers, $id);
@@ -352,7 +341,7 @@ class MsGraph
         }
 
         if ($id === null) {
-            $id = auth()->id();
+            // $id = auth()->id();
         }
 
         return $id;
