@@ -113,7 +113,7 @@ class MsGraph
             if ($token !== null) {
                 if ($token->expires < time()) {
                     $user = (self::$userModel ?: config('auth.providers.users.model'))::find($id);
-                    $this->renewExpiringToken($token, $id, $user->email);
+                    $this->renewExpiringToken($token, $id, optional($user)->email);
                 }
             }
         }
@@ -220,7 +220,7 @@ class MsGraph
         return MsGraphToken::where('user_id', $id)->where('refresh_token', '<>', '')->first();
     }
 
-    public function storeToken(string $access_token, string $refresh_token, string $expires, string $id, string $email): MsGraphToken
+    public function storeToken(string $access_token, string $refresh_token, string $expires, $id = null, $email = null): MsGraphToken
     {
         return MsGraphToken::updateOrCreate(['user_id' => $id], [
             'user_id' => $id,
@@ -289,7 +289,7 @@ class MsGraph
     /**
      * @throws IdentityProviderException
      */
-    protected function renewExpiringToken(object $token, string $id, string $email): mixed
+    protected function renewExpiringToken(object $token, $id = null, $email = null): mixed
     {
         $oauthClient = $this->getProvider();
         $newToken = $oauthClient->getAccessToken('refresh_token', ['refresh_token' => $token->refresh_token]);
