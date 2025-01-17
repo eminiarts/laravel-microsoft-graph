@@ -247,32 +247,39 @@ class Emails extends MsGraph
     }
 
     /**
+     * Moves an email to a specified folder.
+     *
+     * @throws Exception
+     */
+    private function moveToFolder(string $folderName, string $id): array
+    {
+        $folder = MsGraph::get("me/mailFolders?\$filter=displayName eq '$folderName'");
+
+        if (!isset($folder['value'][0]['id'])) {
+            throw new Exception("$folderName folder not found in mailbox.");
+        }
+
+        $destinationId = $folder['value'][0]['id'];
+
+        $movedMessage = MsGraph::post("me/messages/$id/move", [
+            'destinationId' => $destinationId
+        ]);
+
+        if (!isset($movedMessage['id'])) {
+            throw new Exception("Failed to move message to $folderName folder.");
+        }
+
+        return $movedMessage;
+    }
+
+    /**
      * Moves an email to the user's Archive folder.
      *
      * @throws Exception
      */
     public function moveToArchive(string $id): array
     {
-        // Get the Archive folder
-        $folder = MsGraph::get("me/mailFolders?\$filter=displayName eq 'Archiv'");
-
-        if (!isset($folder['value'][0]['id'])) {
-            throw new Exception('Archive folder not found in mailbox.');
-        }
-
-        $destinationId = $folder['value'][0]['id'];
-
-        // Use Microsoft Graph's move endpoint
-        // https://learn.microsoft.com/en-us/graph/api/message-move?view=graph-rest-1.0&tabs=http
-        $movedMessage = MsGraph::post("me/messages/$id/move", [
-            'destinationId' => $destinationId
-        ]);
-
-        if (!isset($movedMessage['id'])) {
-            throw new Exception('Failed to move message to Archive folder.');
-        }
-
-        return $movedMessage;
+        return $this->moveToFolder('Archiv', $id);
     }
 
     protected function prepareEmail(): array
