@@ -41,21 +41,6 @@ class MsGraph
         return new Files;
     }
 
-    public function sites(): Sites
-    {
-        return new Sites;
-    }
-
-    public function tasklists(): TaskLists
-    {
-        return new TaskLists;
-    }
-
-    public function tasks(): Tasks
-    {
-        return new Tasks;
-    }
-
     protected static $user;
 
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
