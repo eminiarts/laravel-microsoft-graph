@@ -251,7 +251,7 @@ class Emails extends MsGraph
      *
      * @throws Exception
      */
-    private function moveToFolder(string $folderName, string $id): array
+    public function moveToFolder(string $folderName, string $id): array
     {
         $folder = MsGraph::get("me/mailFolders?\$filter=displayName eq '$folderName'");
 
