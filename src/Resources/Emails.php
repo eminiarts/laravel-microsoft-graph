@@ -246,6 +246,35 @@ class Emails extends MsGraph
         MsGraph::delete('me/messages/'.$id);
     }
 
+    /**
+     * Moves an email to the user's Archive folder.
+     *
+     * @throws Exception
+     */
+    public function moveToArchive(string $id): array
+    {
+        // Get the Archive folder
+        $folder = MsGraph::get("me/mailFolders?\$filter=displayName eq 'Archiv'");
+
+        if (!isset($folder['value'][0]['id'])) {
+            throw new Exception('Archive folder not found in mailbox.');
+        }
+
+        $destinationId = $folder['value'][0]['id'];
+
+        // Use Microsoft Graph's move endpoint
+        // https://learn.microsoft.com/en-us/graph/api/message-move?view=graph-rest-1.0&tabs=http
+        $movedMessage = MsGraph::post("me/messages/$id/move", [
+            'destinationId' => $destinationId
+        ]);
+
+        if (!isset($movedMessage['id'])) {
+            throw new Exception('Failed to move message to Archive folder.');
+        }
+
+        return $movedMessage;
+    }
+
     protected function prepareEmail(): array
     {
         $subject = $this->subject;
