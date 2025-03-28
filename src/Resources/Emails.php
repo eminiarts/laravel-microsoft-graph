@@ -2,8 +2,9 @@
 
 namespace Dcblogdev\MsGraph\Resources;
 
-use Dcblogdev\MsGraph\Facades\MsGraph;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use Dcblogdev\MsGraph\Facades\MsGraph;
 
 class Emails extends MsGraph
 {
@@ -389,6 +390,8 @@ class Emails extends MsGraph
         
             $envelope['message']['internetMessageHeaders'] = $internetMessageHeaders;
         }
+
+        Log::info($envelope);
 
         return $envelope;
     }
