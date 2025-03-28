@@ -29,6 +29,15 @@ class Emails extends MsGraph
 
     private array $singleValueExtendedProperties = [];
 
+    private array $customHeaders = [];
+
+    public function headers(array $headers): static
+    {
+        $this->customHeaders = $headers;
+
+        return $this;
+    }
+
     public function id(string $id): static
     {
         $this->id = $id;
@@ -366,6 +375,19 @@ class Emails extends MsGraph
 
         if ($comment !== '') {
             $envelope['comment'] = $comment;
+        }
+
+        if (!empty($this->customHeaders)) {
+            $internetMessageHeaders = [];
+        
+            foreach ($this->customHeaders as $name => $value) {
+                $internetMessageHeaders[] = [
+                    'name' => $name,
+                    'value' => $value,
+                ];
+            }
+        
+            $envelope['message']['internetMessageHeaders'] = $internetMessageHeaders;
         }
 
         return $envelope;
