@@ -86,7 +86,7 @@ class MsGraph
     /**
      * @throws Exception
      */
-    public function connect(?string $id = null): Redirector|RedirectResponse
+    public function connect(?string $id = null)
     {
         $id = $this->getUserId($id);
 
