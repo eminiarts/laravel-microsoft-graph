@@ -136,7 +136,7 @@ class MsGraph
             
         }
 
-        return redirect(config('msgraph.msgraphLandingUri'));
+        // return redirect(config('msgraph.msgraphLandingUri'));
     }
 
     public function isConnected(?string $id = null): bool
