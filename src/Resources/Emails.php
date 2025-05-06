@@ -391,7 +391,7 @@ class Emails extends MsGraph
             $envelope['message']['internetMessageHeaders'] = $internetMessageHeaders;
         }
 
-        Log::info($envelope);
+        //Log::info($envelope);
 
         return $envelope;
     }
